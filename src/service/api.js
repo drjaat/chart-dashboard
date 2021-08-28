@@ -1,5 +1,5 @@
 import axios from 'axios'
-const signIn = (email = 'candidate@sigmoid.com', password = 'Sigmoid#123') => {
+const signIn = (email, password) => {
   return axios.post('/signIn', {
     email,
     password,

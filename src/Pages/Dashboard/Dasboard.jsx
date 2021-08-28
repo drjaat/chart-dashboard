@@ -1,6 +1,4 @@
 import React, { useState, useEffect } from 'react'
-import { FormControl, Button } from '@material-ui/core'
-import { useHistory } from 'react-router-dom'
 import { dateRange } from '../../service/api'
 import Flatpickr from 'react-flatpickr'
 import 'flatpickr/dist/themes/dark.css'
@@ -9,12 +7,12 @@ import BasicTable from '../../component/BasicTable'
 import BarChart from '../../component/BarChart'
 import PiaChart from '../../component/PiaChart'
 import CircularProgress from '@material-ui/core/CircularProgress'
+import Header from '../../component/Header'
 
 export default function Dashboard() {
   const [selectedRange, setSelectedRange] = useState()
   const [range, setRange] = useState()
   const [loading, setLoading] = useState()
-  const history = useHistory()
 
   const setDate = (date) => {
     if (Array.isArray(date) && date.length > 1) {
@@ -39,11 +37,6 @@ export default function Dashboard() {
       .catch((error) => console.log(error))
   }, [])
 
-  const logoutUser = () => {
-    localStorage.removeItem('token')
-    history.push('/login')
-  }
-
   const getDate = (start) => {
     if (!range) {
       return new Date().getTime()
@@ -63,7 +56,7 @@ export default function Dashboard() {
 
   if (loading) {
     return (
-      <div>
+      <div className='progress'>
         <CircularProgress disableShrink />
       </div>
     )
@@ -71,18 +64,8 @@ export default function Dashboard() {
 
   return (
     <div>
-      <div>
-        <FormControl>
-          <Button
-            variant='outlined'
-            color='primary'
-            onClick={() => logoutUser()}
-          >
-            Logout
-          </Button>
-        </FormControl>
-      </div>
-      <div>
+      <Header />
+      <div className='m-input'>
         <Flatpickr
           options={options}
           className={styles.flatpickrInput}

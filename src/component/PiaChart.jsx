@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Doughnut } from 'react-chartjs-2'
 import { piaConst } from '../constants'
 import { getData } from '../service/api'
@@ -28,19 +28,6 @@ export default function PiaChart({ selectedRange }) {
   const classes = useStyles()
   const [PiaData, setPiaData] = useState([])
   const [loading, setLoading] = useState()
-  const loadData = useCallback(
-    (request) => {
-      request.chartObject.requestParam.dateRange = selectedRange
-      if (selectedRange) {
-        setLoading(true)
-        getData(request).then((res) => {
-          setPiaData(res.data.result.data)
-          setLoading(false)
-        })
-      }
-    },
-    [selectedRange]
-  )
 
   const randomBetween = (min, max) =>
     min + Math.floor(Math.random() * (max - min + 1))
@@ -64,12 +51,23 @@ export default function PiaChart({ selectedRange }) {
   }
 
   useEffect(() => {
-    loadData(piaConst)
-  }, [loadData])
+    let mounted = true
+    piaConst.chartObject.requestParam.dateRange = selectedRange
+    if (selectedRange) {
+      setLoading(true)
+      getData(piaConst).then((res) => {
+        if (mounted) {
+          setPiaData(res.data.result.data)
+          setLoading(false)
+        }
+      })
+    }
+    return () => (mounted = false)
+  }, [selectedRange])
 
   if (loading) {
     return (
-      <div>
+      <div className='progress'>
         <CircularProgress disableShrink />
       </div>
     )

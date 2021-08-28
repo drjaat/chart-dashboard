@@ -23,3 +23,12 @@
   justify-content: center;
   min-height: 100vh;
 }
+
+.error {
+  font-size: 14px;
+  color: red;
+}
+
+.loader {
+  margin-left: 5px;
+}

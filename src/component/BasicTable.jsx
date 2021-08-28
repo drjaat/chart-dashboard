@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { makeStyles, withStyles } from '@material-ui/core/styles'
 import Table from '@material-ui/core/Table'
 import TableBody from '@material-ui/core/TableBody'
@@ -10,6 +10,7 @@ import TablePagination from '@material-ui/core/TablePagination'
 import Paper from '@material-ui/core/Paper'
 import { table } from '../constants'
 import { getData } from '../service/api'
+import CircularProgress from '@material-ui/core/CircularProgress'
 
 const useStyles = makeStyles({
   table: {
@@ -35,6 +36,7 @@ export default function BasicTable({ selectedRange }) {
   const [rows, setRows] = useState([])
   const [page, setPage] = React.useState(0)
   const [rowsPerPage, setRowsPerPage] = React.useState(5)
+  const [loading, setLoading] = useState()
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage)
@@ -45,21 +47,28 @@ export default function BasicTable({ selectedRange }) {
     setPage(0)
   }
 
-  const loadData = useCallback(
-    (request) => {
-      request.chartObject.requestParam.dateRange = selectedRange
-      if (selectedRange) {
-        getData(request).then((res) => {
-          setRows(res.data.result.data)
-        })
-      }
-    },
-    [selectedRange]
-  )
-
   useEffect(() => {
-    loadData(table)
-  }, [loadData])
+    let mounted = true
+    table.chartObject.requestParam.dateRange = selectedRange
+    if (selectedRange) {
+      setLoading(true)
+      getData(table).then((res) => {
+        if (mounted) {
+          setRows(res.data.result.data)
+          setLoading(false)
+        }
+      })
+    }
+    return () => (mounted = false)
+  }, [selectedRange])
+
+  if (loading) {
+    return (
+      <div className='progress'>
+        <CircularProgress disableShrink />
+      </div>
+    )
+  }
 
   return (
     <Paper className={classes.root}>

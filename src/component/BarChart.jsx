@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Bar } from 'react-chartjs-2'
 import { barConst } from '../constants'
 import { getData } from '../service/api'
@@ -42,27 +42,24 @@ export default function BarChart({ selectedRange }) {
     ],
   }
 
-  const loadData = useCallback(
-    (request) => {
-      request.chartObject.requestParam.dateRange = selectedRange
-      if (selectedRange) {
-        setLoading(true)
-        getData(request).then((res) => {
+  useEffect(() => {
+    let mounted = true
+    barConst.chartObject.requestParam.dateRange = selectedRange
+    if (selectedRange) {
+      setLoading(true)
+      getData(barConst).then((res) => {
+        if (mounted) {
           setBarData(res.data.result.data)
           setLoading(false)
-        })
-      }
-    },
-    [selectedRange]
-  )
-
-  useEffect(() => {
-    loadData(barConst)
-  }, [loadData])
+        }
+      })
+    }
+    return () => (mounted = false)
+  }, [selectedRange])
 
   if (loading) {
     return (
-      <div>
+      <div className='progress'>
         <CircularProgress disableShrink />
       </div>
     )
