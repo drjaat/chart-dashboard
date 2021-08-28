@@ -76,3 +76,5 @@ export const piaConst = {
     },
   },
 }
+
+export const baseUrl = 'https://sigviewauth.sigmoid.io'

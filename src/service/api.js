@@ -1,6 +1,8 @@
 import axios from 'axios'
+import { baseUrl } from '../constants'
+
 const signIn = (email, password) => {
-  return axios.post('/signIn', {
+  return axios.post(`${baseUrl}/signIn`, {
     email,
     password,
     rememberMe: true,
@@ -9,14 +11,14 @@ const signIn = (email, password) => {
 
 const dateRange = () => {
   return axios.post(
-    '/api/v1/getDateRange',
+    `${baseUrl}/api/v1/getDateRange`,
     { organization: 'DemoTest', view: 'Auction' },
     getHeader()
   )
 }
 
 const getData = (obj) => {
-  return axios.post('/api/v1/getData', obj, getHeader())
+  return axios.post(`${baseUrl}/api/v1/getData`, obj, getHeader())
 }
 
 const getHeader = () => {
