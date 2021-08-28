@@ -29,7 +29,11 @@ export default function Login() {
             setIncorrect(true)
           }
         })
-        .catch((error) => console.log(error))
+        .catch((error) => {
+          setLoading(false)
+          setIncorrect(true)
+          console.log(error)
+        })
     } else {
       setError(true)
     }
