@@ -6,9 +6,16 @@ import { useHistory } from 'react-router-dom'
 
 export default function Login() {
   const history = useHistory()
-  const loginUser = async () => {
-    await signIn()
-    history.push('/')
+  const loginUser = () => {
+    signIn()
+      .then((response) => {
+        const { token, statusCode } = response.data
+        if (statusCode === '200') {
+          localStorage.setItem('token', token)
+          history.push('/')
+        }
+      })
+      .catch((error) => console.log(error))
   }
   return (
     <div className={styles.logincontainer}>
