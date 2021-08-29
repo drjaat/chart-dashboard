@@ -11,6 +11,9 @@ export default function Router() {
         <PrivateRoute exact path='/'>
           <Dashboard />
         </PrivateRoute>
+        <PrivateRoute exact path='*'>
+          <Redirect to='/' />
+        </PrivateRoute>
       </Switch>
     </BrowserRouter>
   )
