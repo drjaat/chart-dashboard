@@ -37,6 +37,7 @@ export default function BasicTable({ selectedRange }) {
   const [page, setPage] = React.useState(0)
   const [rowsPerPage, setRowsPerPage] = React.useState(5)
   const [loading, setLoading] = useState()
+  const [error, setError] = useState()
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage)
@@ -49,15 +50,21 @@ export default function BasicTable({ selectedRange }) {
 
   useEffect(() => {
     let mounted = true
+    setError(false)
     table.chartObject.requestParam.dateRange = selectedRange
     if (selectedRange) {
       setLoading(true)
-      getData(table).then((res) => {
-        if (mounted) {
-          setRows(res.data.result.data)
+      getData(table)
+        .then((res) => {
+          if (mounted) {
+            setRows(res.data.result.data)
+            setLoading(false)
+          }
+        })
+        .catch((e) => {
           setLoading(false)
-        }
-      })
+          setError(true)
+        })
     }
     return () => (mounted = false)
   }, [selectedRange])
@@ -68,6 +75,10 @@ export default function BasicTable({ selectedRange }) {
         <CircularProgress disableShrink />
       </div>
     )
+  }
+
+  if (error) {
+    return <h4>No Data Found</h4>
   }
 
   return (

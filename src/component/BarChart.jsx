@@ -28,6 +28,8 @@ export default function BarChart({ selectedRange }) {
   const classes = useStyles()
   const [barData, setBarData] = useState([])
   const [loading, setLoading] = useState()
+  const [error, setError] = useState()
+
   const state = {
     labels: barData.map((item) => item.appSiteId),
     datasets: [
@@ -44,15 +46,22 @@ export default function BarChart({ selectedRange }) {
 
   useEffect(() => {
     let mounted = true
+    setError(false)
     barConst.chartObject.requestParam.dateRange = selectedRange
     if (selectedRange) {
       setLoading(true)
-      getData(barConst).then((res) => {
-        if (mounted) {
-          setBarData(res.data.result.data)
+      getData(barConst)
+        .then((res) => {
+          if (mounted) {
+            setBarData(res.data.result.data)
+            setLoading(false)
+          }
+        })
+        .catch((e) => {
           setLoading(false)
-        }
-      })
+          setError(true)
+          console.log(e)
+        })
     }
     return () => (mounted = false)
   }, [selectedRange])
@@ -63,6 +72,10 @@ export default function BarChart({ selectedRange }) {
         <CircularProgress disableShrink />
       </div>
     )
+  }
+
+  if (error) {
+    return <h4>No Data Found</h4>
   }
 
   return (

@@ -13,7 +13,8 @@ export default function Login() {
   const [loading, setLoading] = useState(false)
   const [incorrect, setIncorrect] = useState(false)
 
-  const loginUser = () => {
+  const loginUser = (e) => {
+    e.preventDefault()
     setIncorrect(false)
     if (!!email && !!password) {
       setError(false)
@@ -38,6 +39,7 @@ export default function Login() {
       setError(true)
     }
   }
+
   return (
     <div className={styles.logincontainer}>
       <div className={styles.login}>
@@ -73,11 +75,7 @@ export default function Login() {
           <span className={styles.error}>Incorrect Username Password</span>
         )}
         <FormControl>
-          <Button
-            variant='outlined'
-            color='primary'
-            onClick={() => loginUser()}
-          >
+          <Button variant='outlined' color='primary' onClick={loginUser}>
             Login
             {loading && (
               <span className={styles.loader}>

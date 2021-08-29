@@ -23,7 +23,7 @@ export default function Header() {
   const history = useHistory()
 
   const logoutUser = () => {
-    sessionStorage.removeItem('token')
+    localStorage.removeItem('token')
     history.push('/login')
   }
 

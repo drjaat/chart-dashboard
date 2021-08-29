@@ -8,10 +8,10 @@ export default function Router() {
         <Route exact path='/login'>
           <Login />
         </Route>
+        <PrivateRoute exact path='/'>
+          <Dashboard />
+        </PrivateRoute>
       </Switch>
-      <PrivateRoute exact path='/'>
-        <Dashboard />
-      </PrivateRoute>
     </BrowserRouter>
   )
 }

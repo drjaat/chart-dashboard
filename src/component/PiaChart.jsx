@@ -28,6 +28,7 @@ export default function PiaChart({ selectedRange }) {
   const classes = useStyles()
   const [PiaData, setPiaData] = useState([])
   const [loading, setLoading] = useState()
+  const [error, setError] = useState()
 
   const randomBetween = (min, max) =>
     min + Math.floor(Math.random() * (max - min + 1))
@@ -52,15 +53,21 @@ export default function PiaChart({ selectedRange }) {
 
   useEffect(() => {
     let mounted = true
+    setError(false)
     piaConst.chartObject.requestParam.dateRange = selectedRange
     if (selectedRange) {
       setLoading(true)
-      getData(piaConst).then((res) => {
-        if (mounted) {
-          setPiaData(res.data.result.data)
+      getData(piaConst)
+        .then((res) => {
+          if (mounted) {
+            setPiaData(res.data.result.data)
+            setLoading(false)
+          }
+        })
+        .catch((e) => {
+          setError(true)
           setLoading(false)
-        }
-      })
+        })
     }
     return () => (mounted = false)
   }, [selectedRange])
@@ -71,6 +78,10 @@ export default function PiaChart({ selectedRange }) {
         <CircularProgress disableShrink />
       </div>
     )
+  }
+
+  if (error) {
+    return <h4>No Data Found</h4>
   }
 
   return (
